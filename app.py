@@ -98,16 +98,16 @@ if st.button("Track Shipment", type="primary"):
                 st.write("---")
                 st.subheader("📍 Transit Milestones")
                 if data["checkpoints"]:
-    for item in data["checkpoints"]:
-        hub_info = f" • <code style='font-size:0.75rem; color:#10b981;'>{item['location']}</code>" if item['location'] else ""
-        st.markdown(f"""
-        <div style="padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,0.08); margin: 0;">
-            <span style="font-size: 0.92rem; font-weight: 600;">{item['time']}</span> 
-            <span style="color: #94a3b8;">—</span> 
-            <span style="font-size: 0.92rem;">{item['activity']}</span>
-            <div style="font-size: 0.8rem; color: #64748b; margin-top: 2px;">Hub:{hub_info}</div>
-        </div>
-        """, unsafe_allow_html=True)
+                    for item in data["checkpoints"]:
+                        hub_info = f" • <code style='font-size:0.75rem; color:#10b981;'>{item['location']}</code>" if item['location'] else ""
+                        st.markdown(f"""
+                        <div style="padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,0.08); margin: 0;">
+                            <span style="font-size: 0.92rem; font-weight: 600;">{item['time']}</span> 
+                            <span style="color: #94a3b8;">—</span> 
+                            <span style="font-size: 0.92rem;">{item['activity']}</span>
+                            <div style="font-size: 0.8rem; color: #64748b; margin-top: 2px;">Hub:{hub_info}</div>
+                        </div>
+                        """, unsafe_allow_html=True)
                 else:
                     st.info("No transit checkpoints available.")
 
