@@ -2,14 +2,11 @@ import streamlit as st
 import requests
 import re
 
-# 1. Page Configuration
-st.set_page_config(
-    page_title="DrShipz",
-    page_icon="📦",
-    layout="centered"
-)
+ZENROWS_KEY = "238066cb237646e8ed58605882a123b14f2628cd"
 
-# 2. Aggressively hide GitHub links, header toolbar, footer, and menu
+st.set_page_config(page_title="DrShipz", page_icon="📦", layout="centered")
+
+# Hide Streamlit header, toolbar, Fork, and GitHub icons
 hide_style = """
     <style>
     #MainMenu {visibility: hidden !important; display: none !important;}
@@ -23,23 +20,14 @@ hide_style = """
 """
 st.markdown(hide_style, unsafe_allow_html=True)
 
-# 3. Branding
 st.title("📦 DrShipz")
 st.caption("Live carrier scan and checkpoint tracker")
 
-# 4. Input Field
-awb_input = st.text_input(
-    "Enter AWB Number:", 
-    value="33827139983026", 
-    placeholder="e.g. 33827139983026"
-)
+awb_input = st.text_input("Enter AWB Number:", value="33827139983026", placeholder="e.g. 33827139983026")
 
-# 5. Fetch Shipment Data
 def fetch_shipment(awb):
-    api_key = st.secrets["ZENROWS_KEY"] if "ZENROWS_KEY" in st.secrets else "238066cb237646e8ed58605882a123b14f2628cd"
     target_url = f"https://shipprime.live/track-order?awb={awb}"
-    
-    api_url = f"https://api.zenrows.com/v1/?apikey={api_key}&url={target_url}&js_render=true&premium_proxy=true"
+    api_url = f"https://api.zenrows.com/v1/?apikey={ZENROWS_KEY}&url={target_url}&js_render=true&wait=3000"
 
     resp = requests.get(api_url)
     if resp.status_code != 200:
@@ -96,7 +84,6 @@ def fetch_shipment(awb):
         "checkpoints": checkpoints
     }, None
 
-# 6. Action Button & Results Display
 if st.button("Track Shipment", type="primary"):
     if not awb_input.strip():
         st.warning("Please enter an AWB number.")
@@ -106,7 +93,6 @@ if st.button("Track Shipment", type="primary"):
             if err:
                 st.error(err)
             else:
-                # 3-Column Display: Order ID, Status, Current Hub
                 c1, c2, c3 = st.columns(3)
                 c1.metric("Order ID", data["order_id"])
                 c2.metric("Status", data["status"])
