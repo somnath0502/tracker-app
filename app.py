@@ -8,8 +8,7 @@ ZENROWS_KEY = "238066cb237646e8ed58605882a123b14f2628cd"
 st.set_page_config(
     page_title="DrShipz Enterprise Cargo Engine",
     page_icon="⚡",
-    layout="wide",
-    initial_sidebar_state="collapsed"
+    layout="centered",
 )
 st.title("📦 DrShipz")
 st.caption("The Most Reliable Carrier📦")
