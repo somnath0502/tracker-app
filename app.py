@@ -85,11 +85,11 @@ if st.button("Track Shipment", type="primary"):
             if err:
                 st.error(err)
             else:
-                c1, c2, c3, c4 = st.columns(4)
-                c1.metric("Order ID", data["order_id"])
-                c2.metric("Courier", data["courier"])
-                c3.metric("Status", data["status"])
-                c4.metric("Current Hub", data["location"])
+               # New code (Courier removed):
+c1, c2, c3 = st.columns(3)
+c1.metric("Order ID", data["order_id"])
+c2.metric("Status", data["status"])
+c3.metric("Current Hub", data["location"])
 
                 st.write("---")
                 st.subheader("📍 Transit Milestones")
