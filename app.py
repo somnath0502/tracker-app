@@ -7,7 +7,7 @@ ZENROWS_KEY = "238066cb237646e8ed58605882a123b14f2628cd"
 
 st.set_page_config(
     page_title="DrShipz Enterprise Cargo Engine",
-    page_icon="🇮🇳",
+    page_icon="⚡",
     layout="wide",
     initial_sidebar_state="collapsed"
 )
@@ -104,16 +104,6 @@ st.markdown("""
         margin: 0;
         font-weight: 500;
         line-height: 1.5;
-    }
-
-    /* Input & Search Shell */
-    .search-card {
-        background: #0d131f;
-        border: 1px solid #1e293b;
-        border-radius: 18px;
-        padding: 16px 20px;
-        margin-bottom: 24px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
     }
 
     /* Enterprise Stats Card */
@@ -229,59 +219,6 @@ st.markdown("""
         font-weight: 800;
         color: #f8fafc;
         letter-spacing: -0.5px;
-    }
-
-    /* Live Waypoint Timeline */
-    .audit-trail {
-        position: relative;
-        padding-left: 32px;
-        margin-top: 20px;
-    }
-
-    .audit-trail::before {
-        content: "";
-        position: absolute;
-        top: 10px;
-        bottom: 10px;
-        left: 10px;
-        width: 2px;
-        background: linear-gradient(180deg, #38bdf8 0%, #1e293b 100%);
-    }
-
-    .waypoint {
-        position: relative;
-        margin-bottom: 28px;
-    }
-
-    .waypoint-ping {
-        position: absolute;
-        left: -28px;
-        top: 4px;
-        width: 14px;
-        height: 14px;
-        border-radius: 50%;
-        background: #38bdf8;
-        border: 3px solid #0d131f;
-        box-shadow: 0 0 12px #38bdf8;
-    }
-
-    .waypoint-stamp {
-        font-size: 0.8rem;
-        font-weight: 700;
-        color: #38bdf8;
-        margin-bottom: 4px;
-    }
-
-    .waypoint-action {
-        font-size: 1rem;
-        font-weight: 700;
-        color: #f8fafc;
-    }
-
-    .waypoint-station {
-        font-size: 0.85rem;
-        color: #94a3b8;
-        margin-top: 4px;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -450,29 +387,23 @@ if track_clicked:
                 </div>
                 """, unsafe_allow_html=True)
 
-                # Detailed Telemetry Milestones Card
+                # Clean Waypoint Audit Trail (Resolves raw HTML render bug)
                 if data["checkpoints"]:
-                    events_markup = ""
-                    for cp in data["checkpoints"]:
-                        hub_tag = f'<div class="waypoint-station">📍 <b>Terminal:</b> {cp["location"]}</div>' if cp["location"] else ""
-                        events_markup += f"""
-                        <div class="waypoint">
-                            <div class="waypoint-ping"></div>
-                            <div class="waypoint-stamp">{cp['time']}</div>
-                            <div class="waypoint-action">{cp['activity']}</div>
-                            {hub_tag}
-                        </div>
-                        """
-
-                    st.markdown(f"""
-                    <div class="stat-container">
-                        <div style="font-size: 1.25rem; font-weight: 800; color: #f8fafc; margin-bottom: 24px; font-family: 'Space Grotesk', sans-serif;">
-                            Live Waypoint Audit Trail
-                        </div>
-                        <div class="audit-trail">
-                            {events_markup}
-                        </div>
+                    st.markdown("""
+                    <div style="font-size: 1.35rem; font-weight: 800; color: #f8fafc; margin: 32px 0 16px 0; font-family: 'Space Grotesk', sans-serif;">
+                        📍 Live Waypoint Audit Trail
                     </div>
                     """, unsafe_allow_html=True)
+
+                    for cp in data["checkpoints"]:
+                        with st.container():
+                            col_stamp, col_body = st.columns([1.3, 3.2])
+                            with col_stamp:
+                                st.markdown(f"<span style='color: #38bdf8; font-weight: 700; font-size: 0.9rem;'>{cp['time']}</span>", unsafe_allow_html=True)
+                            with col_body:
+                                st.markdown(f"<span style='color: #f8fafc; font-weight: 700; font-size: 1rem;'>{cp['activity']}</span>", unsafe_allow_html=True)
+                                if cp["location"]:
+                                    st.markdown(f"<span style='color: #94a3b8; font-size: 0.85rem;'>📍 Terminal: <code>{cp['location']}</code></span>", unsafe_allow_html=True)
+                            st.markdown("<hr style='border: none; border-top: 1px solid #1e293b; margin: 10px 0 16px 0;'>", unsafe_allow_html=True)
                 else:
                     st.info("No waypoint checkpoints scanned yet.")
