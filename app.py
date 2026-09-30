@@ -5,12 +5,112 @@ import re
 
 ZENROWS_KEY = "238066cb237646e8ed58605882a123b14f2628cd"
 
-st.set_page_config(page_title="Shipment Tracker", page_icon="📦", layout="centered")
+st.set_page_config(page_title="DrShipz Tracker", page_icon="📦", layout="centered")
 
-st.title("📦 DrShipz")
-st.caption("The Most Reliable Carrier📦")
+# Modern Styling & Custom Cards
+st.markdown("""
+<style>
+    /* Global Container Adjustments */
+    .block-container {
+        padding-top: 2rem;
+        padding-bottom: 3rem;
+        max-width: 720px;
+    }
+    #MainMenu, footer, header {
+        visibility: hidden;
+    }
+    
+    /* Header Card */
+    .brand-header {
+        text-align: center;
+        padding: 24px;
+        background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+        border: 1px solid #334155;
+        border-radius: 16px;
+        margin-bottom: 24px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+    }
+    .brand-title {
+        font-size: 2rem;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+        color: #f8fafc;
+        margin-bottom: 4px;
+    }
+    .brand-subtitle {
+        color: #38bdf8;
+        font-size: 0.95rem;
+        font-weight: 600;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
 
-awb_input = st.text_input("Enter AWB Number:", value="33827139983026", placeholder="e.g. 33827139983026")
+    /* Metric Cards */
+    div[data-testid="stMetric"] {
+        background: #1e293b;
+        border: 1px solid #334155;
+        border-radius: 12px;
+        padding: 14px 18px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    div[data-testid="stMetricLabel"] p {
+        color: #94a3b8 !important;
+        font-weight: 500;
+        font-size: 0.82rem !important;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    div[data-testid="stMetricValue"] {
+        color: #f1f5f9 !important;
+        font-size: 1.15rem !important;
+        font-weight: 700;
+    }
+
+    /* Timeline Milestones */
+    .timeline-item {
+        position: relative;
+        padding-left: 24px;
+        margin-bottom: 20px;
+        border-left: 2px solid #38bdf8;
+    }
+    .timeline-dot {
+        position: absolute;
+        left: -6px;
+        top: 3px;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background-color: #38bdf8;
+        box-shadow: 0 0 8px #38bdf8;
+    }
+    .timeline-time {
+        font-size: 0.8rem;
+        color: #94a3b8;
+        font-weight: 500;
+        margin-bottom: 2px;
+    }
+    .timeline-activity {
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: #f8fafc;
+    }
+    .timeline-hub {
+        font-size: 0.82rem;
+        color: #64748b;
+        margin-top: 3px;
+    }
+</style>
+""", unsafe_allow_html=True)
+
+# Custom Header Display
+st.markdown("""
+<div class="brand-header">
+    <div class="brand-title">📦 DrShipz</div>
+    <div class="brand-subtitle">The Most Reliable Carrier</div>
+</div>
+""", unsafe_allow_html=True)
+
+awb_input = st.text_input("Track your shipment:", value="33827139983026", placeholder="Enter AWB / Waybill number...")
 
 def fetch_shipment(awb):
     target_url = urllib.parse.quote(f"https://shipprime.live/track-order?awb={awb}", safe='')
@@ -77,7 +177,7 @@ def fetch_shipment(awb):
         "checkpoints": checkpoints
     }, None
 
-if st.button("Track Shipment", type="primary"):
+if st.button("Track Package", type="primary", use_container_width=True):
     if not awb_input.strip():
         st.warning("Please enter an AWB number.")
     else:
@@ -86,20 +186,26 @@ if st.button("Track Shipment", type="primary"):
             if err:
                 st.error(err)
             else:
+                st.write("")
                 c1, c2, c3, c4 = st.columns(4)
                 c1.metric("Order ID", data["order_id"])
                 c2.metric("Courier", data["courier"])
                 c3.metric("Status", data["status"])
                 c4.metric("Current Hub", data["location"])
 
-                st.write("---")
+                st.write("")
                 st.subheader("📍 Transit Milestones")
+                
                 if data["checkpoints"]:
                     for item in data["checkpoints"]:
-                        with st.container():
-                            st.markdown(f"**{item['time']}** — {item['activity']}")
-                            if item['location']:
-                                st.caption(f"Hub: `{item['location']}`")
-                            st.divider()
+                        hub_html = f'<div class="timeline-hub">📍 {item["location"]}</div>' if item["location"] else ""
+                        st.markdown(f"""
+                        <div class="timeline-item">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-time">{item['time']}</div>
+                            <div class="timeline-activity">{item['activity']}</div>
+                            {hub_html}
+                        </div>
+                        """, unsafe_allow_html=True)
                 else:
                     st.info("No transit checkpoints available.")
