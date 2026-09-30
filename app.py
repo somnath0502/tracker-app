@@ -24,8 +24,7 @@ st.caption("Track live package movements")
 awb_input = st.text_input("Enter AWB / Tracking Number:", placeholder="e.g. 1234567890")
 
 def fetch_shipment(awb):
-    # Fetch logic using ZenRows / Carrier API
-   url = f"https://api.zenrows.com/v1/?apikey={st.secrets.get('ZENROWS_KEY', '')}&url=https://track.delhivery.com/api/v1/packages/json/?waybill={awb}&js_render=true&premium_proxy=true"
+    url = f"https://api.zenrows.com/v1/?apikey={st.secrets.get('ZENROWS_KEY', '')}&url=https://track.delhivery.com/api/v1/packages/json/?waybill={awb}&js_render=true&premium_proxy=true"
     try:
         res = requests.get(url, timeout=30)
         if res.status_code != 200:
