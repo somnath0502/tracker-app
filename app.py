@@ -102,3 +102,14 @@ if st.button("Track Shipment", type="primary"):
                             st.divider()
                 else:
                     st.info("No transit checkpoints available.")
+                    # Put this right after st.set_page_config(...)
+hide_streamlit_style = """
+    <style>
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    header {visibility: hidden;}
+    .viewerBadge_container__1QSob {display: none !important;}
+    [data-testid="stToolbar"] {visibility: hidden !important; display: none !important;}
+    </style>
+"""
+st.markdown(hide_streamlit_style, unsafe_allow_html=True)
