@@ -149,7 +149,7 @@ c1, c2 = st.columns([5, 1.4])
 with c1:
     awb_input = st.text_input(
         "AWB / Tracking Number",
-        value="33827139983026",
+        value="1234567890",
         placeholder="Enter Waybill or Consignment Reference...",
         label_visibility="collapsed"
     )
