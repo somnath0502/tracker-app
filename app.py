@@ -4,9 +4,9 @@ import re
 
 ZENROWS_KEY = "238066cb237646e8ed58605882a123b14f2628cd"
 
-st.set_page_config(page_title="Shipment Tracker", page_icon="📦", layout="centered")
+st.set_page_config(page_title="DrShipz Tracker", page_icon="📦", layout="centered")
 
-st.title("📦 Courier Hub Tracker")
+st.title("📦 DrShipz Tracker")
 st.caption("Live carrier scan and checkpoint tracker")
 
 awb_input = st.text_input("Enter AWB Number:", value="33827139983026", placeholder="e.g. 33827139983026")
